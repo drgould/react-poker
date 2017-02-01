@@ -11,10 +11,14 @@
     "babel-core": "^4.7.16",
     "babel-loader": "^4.2.0",
     "babel-runtime": "^5.0.0-beta1",
+    "faker": "^3.1.0",
     "normalize.css": "^3.0.3",
     "webpack": "^1.7.3"
   },
   "dependencies": {
-    "react": "^0.13.1"
+    "firebase": "^3.6.6",
+    "re-base": "^2.5.2",
+    "react": "^15.4.2",
+    "react-router": "^3.0.2"
   }
 }

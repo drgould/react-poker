@@ -2,11 +2,12 @@
 'use strict';
 
 import React from 'react';
+import timer from '../services/timer';
 
 class Timer extends React.Component {
     constructor(props) {
         this.state = { secondsLeft: props.startingTime };
-        this.tickInterval;
+        this.tickInterval = undefined;
 
         this.resetTimer = this.resetTimer.bind( this );
         this.tick = this.tick.bind( this );
@@ -37,17 +38,11 @@ class Timer extends React.Component {
         clearInterval( this.tickInterval );
     }
 
-    displayTime( secondsLeft ) {
-        let displayMinutes = Math.floor( secondsLeft / 60 );
-        let displaySeconds = ( secondsLeft % 60 ) < 10 ? '0' + secondsLeft % 60 : secondsLeft % 60;
-        return displayMinutes + ':' + displaySeconds;
-    }
-
     render() {
         return (
             <div className="timer">
                 <h2>Blinds raise in:</h2>
-                <div className="current-time">{ this.displayTime( this.state.secondsLeft ) }</div>
+                <div className="current-time">{ timer.secondsToTime( this.state.secondsLeft ) }</div>
                 <div className="buttons">
                     <button onClick={ this.play }>Play</button>
                     <button onClick={ this.pause }>Pause</button>
