@@ -46,7 +46,7 @@ class Debts extends React.Component {
             return <li className="no-debts">(No debts!)</li>;
         }
         debts.map( ( debt, index ) => {
-            debtsList.push( <Debt key={ index } debt={ debt  } /> );
+            return <Debt key={ index } debt={ debt  } />;
         } );
         return debtsList;
     }

@@ -1,8 +1,8 @@
-import { Component } from 'react';
+import React from 'react';
 import { Link } from 'react-router';
 import timer from '../services/timer';
 
-class Game extends Component {
+class Game extends React.Component {
     render() {
         return (
             <Link to={`/game/${this.props.game.id}`}>

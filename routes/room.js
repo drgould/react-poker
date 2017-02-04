@@ -1,14 +1,17 @@
 'use strict';
 
-import { Component } from 'react';
-import * as firebase from 'firebase';
-import RoomModel from '../models/Room';
-import GameModel from '../models/Game';
+import React from 'react';
 import GameComponent from '../components/Game';
 import db from '../services/db';
 
-class Room extends Component {
-    componentWillMount() {
+class Room extends React.Component {
+    constructor() {
+        this.state = {
+            room : {},
+            games : []
+        };
+    }
+    componentDidMount() {
         this.roomRef = db.bindToState( `rooms/${this.props.params.roomId}`, {
             context : this,
             state : 'room'
@@ -27,16 +30,14 @@ class Room extends Component {
         db.removeBinding( this.gamesRef );
     }
     getGames( inProgress ) {
-        let games;
-        for( let game of this.state.games ) {
-            if( game.inProgress === inProgress ) {
-                games += ( <li><GameComponent game={game}/></li> )
-            }
-        }
-        return games;
+        return this.state.games.filter( game => game.inProgress === inProgress ).map( game => <li><GameComponent key={game.key} game={game}/></li> );
+    }
+
+    getBlinds() {
+        this.state.room.blinds.map( blind => <li>{ blind } / { blind * 2 }</li> )
     }
     render() {
-        let inactiveGames = this.state.games
+        let inactiveGames = this.state.games;
         return (
             <div>
                 <h2>{ this.state.room.name }</h2>
@@ -44,7 +45,7 @@ class Room extends Component {
                 <h4>Minutes per level</h4>
                 <p>{ this.state.room.minutesPerLevel }</p>
                 <h4>Blinds</h4>
-                <ul>{ this.state.room.blinds.map( blind => <li>{ blind } / { blind * 2 }</li> ) }</ul>
+                <ul>{  }</ul>
                 <h4>Games</h4>
                 <h5>In Progress</h5>
                 <ul>{ this.getGames( true ) }</ul>

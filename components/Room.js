@@ -1,12 +1,12 @@
 'use strict';
 
-import { Component } from 'react';
+import React from 'react';
 import { Link } from 'react-router';
 
-class Room extends Component {
+class Room extends React.Component {
     render() {
         return (
-            <Link to={`/room/${this.props.room.id}`}>{this.props.room.name}</Link>
+            <Link to={`/room/${this.props.room.key}`}>{this.props.room.name}</Link>
         );
     }
 }

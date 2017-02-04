@@ -1,6 +1,6 @@
 'use strict';
 
-import { Component } from 'react';
+import React from 'react';
 import Timer from '../components/Timer.js';
 import Blinds from '../components/Blinds.js';
 import Pot from '../components/Pot.js';
@@ -8,9 +8,9 @@ import Debts from '../components/Debts.js';
 import Clock from '../components/Clock.js';
 import db from '../services/db';
 
-import { startingSeconds, payouts, buyIn, smallBlinds } from '../variables.js';
+import { startingSeconds, payouts, buyIn, smallBlinds } from '../services/variables.js';
 
-class Game extends Component {
+class Game extends React.Component {
     componentWillMount() {
         this.gameRef = db.bindState( `/game/${this.props.params.gameId}` );
         window.addEventListener( 'blinds-up', this.handleBlindsUp, false );
