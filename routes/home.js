@@ -3,13 +3,15 @@
 import React from 'react';
 import RoomComponent from '../components/Room';
 import db from '../services/db';
+import { smallBlinds } from '../services/variables';
 import _clone from 'lodash/clone';
 
 class Home extends React.Component {
     constructor() {
         this.state = { rooms : [] };
         this.tempRoom = {
-            name : 'New Room'
+            name : 'New Room',
+            blinds : _clone( smallBlinds )
         };
     }
     componentDidMount() {

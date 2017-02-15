@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server --inline --content-base ./public",
     "build": "webpack && cp ./node_modules/normalize.css/normalize.css public/",
-    "setup": "npm install -g webpack http-server && npm install",
+    "setup": "npm install -g webpack && npm install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "license": "MIT",
