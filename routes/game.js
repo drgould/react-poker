@@ -5,7 +5,6 @@ import Timer from '../components/Timer.js';
 import Blinds from '../components/Blinds.js';
 import Pot from '../components/Pot.js';
 import Debts from '../components/Debts.js';
-import Clock from '../components/Clock.js';
 import db from '../services/db';
 
 import { startingSeconds, payouts, buyIn, smallBlinds } from '../services/variables.js';
@@ -31,34 +30,18 @@ class Game extends React.Component {
 
     render() {
         return (
-            <div>
-                <div className="orange-bg">
-                    <div className="container header">
-                        <div className="col1">
-                            <Clock />
-                        </div>
-                        <div className="col2">
-                            <h2 className="poker-title">Poker Simulator</h2>
-                        </div>
-                        <div className="col3">
-                            &nbsp;
-                        </div>
-                        <div className="clear-both"></div>
-                    </div>
+            <div className="container">
+                <div className="col1">
+                    <Blinds smallBlinds={ smallBlinds } />
                 </div>
-                <div className="container">
-                    <div className="col1">
-                        <Blinds smallBlinds={ smallBlinds } />
-                    </div>
-                    <div className="col2">
-                        <Timer startingTime={ startingSeconds } />
-                    </div>
-                    <div className="col3">
-                        <Pot payouts={ payouts } buyIn={ buyIn } />
-                        <Debts />
-                    </div>
-                    <div className="clear-both"></div>
+                <div className="col2">
+                    <Timer startingTime={ startingSeconds } />
                 </div>
+                <div className="col3">
+                    <Pot payouts={ payouts } buyIn={ buyIn } />
+                    <Debts />
+                </div>
+                <div className="clear-both"></div>
             </div>
         );
     }

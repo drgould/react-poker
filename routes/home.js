@@ -1,10 +1,13 @@
 'use strict';
 
 import React from 'react';
+import { browserHistory } from 'react-router';
 import RoomComponent from '../components/Room';
+import Button from 'react-md/lib/Buttons/Button'
 import db from '../services/db';
-import { smallBlinds } from '../services/variables';
+import { smallBlinds, defaultRoom } from '../services/variables';
 import _clone from 'lodash/clone';
+import _cloneDeep from 'lodash/cloneDeep';
 
 class Home extends React.Component {
     constructor() {
@@ -15,7 +18,7 @@ class Home extends React.Component {
         };
     }
     componentDidMount() {
-        this.roomsRef = db.syncState( `rooms`, {
+        this.roomsRef = db.bindToState( `rooms`, {
             context : this,
             state : 'rooms',
             asArray : true
@@ -23,17 +26,6 @@ class Home extends React.Component {
     }
     componentWillUnmount() {
         db.removeBinding( this.roomsRef );
-    }
-
-    saveRoom( ev ) {
-        ev.preventDefault();
-        this.setState( {
-            rooms : this.state.rooms.concat( _clone( this.tempRoom ) )
-        } );
-    }
-
-    updateName( ev ) {
-        this.tempRoom.name = ev.target.value;
     }
 
     getRooms() {
@@ -45,20 +37,20 @@ class Home extends React.Component {
 
     render() {
         return (
-        <div>
-            <h1>Rooms</h1>
-            <div>{ this.getRooms() }</div>
-            <form onSubmit={ev => this.saveRoom( ev )}>
-                <h2>Create a Room</h2>
-                <label>
-                    Name:
-                    <input
-                        type="text"
-                        onChange={this.updateName.bind( this )} />
-                </label>
-                <button type="submit">Create Room</button>
-            </form>
-        </div> );
+            <div>
+                <h1>Rooms</h1>
+                <div>{ this.getRooms() }</div>
+                <Button
+                    floating
+                    secondary
+                    fixed
+                    onClick={() => browserHistory.push( '/rooms/new' )}
+                    tooltipLabel="Create Room"
+                    tooltipPosition="left">
+                    add
+                </Button>
+            </div>
+        );
     }
 }
 
