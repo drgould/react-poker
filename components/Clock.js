@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from 'react-md/lib/Buttons/Button';
+import Chip from 'material-ui/Chip';
 
 export default class Clock extends React.Component {
     constructor() {
@@ -18,6 +18,6 @@ export default class Clock extends React.Component {
     }
 
     render() {
-        return <Button flat label={this.getTime()}/>;
+        return <Chip>{this.getTime()}</Chip>;
     }
 };

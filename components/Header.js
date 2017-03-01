@@ -1,10 +1,9 @@
 import React from 'react';
-import { withRouter } from 'react-router';
-import Toolbar from 'react-md/lib/Toolbars/Toolbar';
+import AppBar from 'material-ui/AppBar';
 
 import Clock from './Clock';
 
-export default withRouter( class Header extends React.Component {
+export default class Header extends React.Component {
     constructor() {
         this.state = ( { now: new Date() } );
 
@@ -17,6 +16,10 @@ export default withRouter( class Header extends React.Component {
     }
 
     render() {
-        return <Toolbar fixed colored title="Poker Simulator" actions={<Clock/>} />;
+        return (
+            <AppBar
+                title="Poker Simulator"
+                iconElementRight={<Clock/>} />
+        );
     }
-} );
+};

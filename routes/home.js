@@ -1,17 +1,21 @@
-'use strict';
-
 import React from 'react';
 import { browserHistory } from 'react-router';
-import RoomComponent from '../components/Room';
-import Button from 'react-md/lib/Buttons/Button'
-import db from '../services/db';
-import { smallBlinds, defaultRoom } from '../services/variables';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import CircularProgress from 'material-ui/CircularProgress';
 import _clone from 'lodash/clone';
-import _cloneDeep from 'lodash/cloneDeep';
+
+import db from '../services/db';
+import ROUTES from '../services/routes';
+import { smallBlinds } from '../services/variables';
+import Room from '../components/Room';
 
 class Home extends React.Component {
     constructor() {
-        this.state = { rooms : [] };
+        this.state = {
+            rooms : [],
+            loading : true
+        };
         this.tempRoom = {
             name : 'New Room',
             blinds : _clone( smallBlinds )
@@ -21,7 +25,10 @@ class Home extends React.Component {
         this.roomsRef = db.bindToState( `rooms`, {
             context : this,
             state : 'rooms',
-            asArray : true
+            asArray : true,
+            then() {
+                this.setState( { loading : false } );
+            }
         } );
     }
     componentWillUnmount() {
@@ -29,10 +36,13 @@ class Home extends React.Component {
     }
 
     getRooms() {
+        if( this.state.loading ) {
+            return <CircularProgress/>
+        }
         if( !this.state.rooms.length ) {
             return <h3>No Rooms!</h3>;
         }
-        return this.state.rooms.map( room => <RoomComponent key={room.key} room={room}/> );
+        return this.state.rooms.map( room => <Room key={room.key} room={room}/> );
     }
 
     render() {
@@ -40,15 +50,10 @@ class Home extends React.Component {
             <div>
                 <h1>Rooms</h1>
                 <div>{ this.getRooms() }</div>
-                <Button
-                    floating
-                    secondary
-                    fixed
-                    onClick={() => browserHistory.push( '/rooms/new' )}
-                    tooltipLabel="Create Room"
-                    tooltipPosition="left">
-                    add
-                </Button>
+                <FloatingActionButton
+                    onClick={() => browserHistory.push( ROUTES.ROOM.getUrl() )}>
+                    <ContentAdd/>
+                </FloatingActionButton>
             </div>
         );
     }

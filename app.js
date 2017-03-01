@@ -1,18 +1,17 @@
-'use strict';
-
-import 'react-md/dist/react-md.deep_orange-blue.min.css';
 import React from 'react';
 import { render } from 'react-dom';
-import { Router, Route, IndexRoute, browserHistory } from 'react-router';
+import Router from 'react-router/lib/Router';
+import browserHistory from 'react-router/lib/browserHistory';
 import WebFont from 'webfontloader';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 
-import { routes } from './services/routing';
-
+import routingConfig from './services/routingConfig';
 
 WebFont.load({
     google: {
         families: ['Roboto:300,400,500,700', 'Material Icons'],
     },
 });
+injectTapEventPlugin();
 
-render( <Router routes={routes}/>, document.getElementById( 'app' ) );
+render( <Router routes={routingConfig} history={browserHistory}/>, document.getElementById( 'app' ) );

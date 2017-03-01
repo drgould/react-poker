@@ -1,15 +1,19 @@
 import React from 'react';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+
 import Header from './Header';
 
 export default class AppFrame extends React.Component {
     render() {
         return (
-            <div>
-                <Header/>
-                <div className="md-toolbar-relative">
+            <MuiThemeProvider muiTheme={getMuiTheme( lightBaseTheme )}>
+                <div>
+                    <Header/>
                     { this.props.children }
                 </div>
-            </div>
+            </MuiThemeProvider>
         )
     }
 };
