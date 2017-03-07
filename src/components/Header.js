@@ -1,10 +1,12 @@
 import React from 'react';
-import AppBar from 'material-ui/AppBar';
+import AppBar from 'react-toolbox/lib/app_bar';
+import Navigation from 'react-toolbox/lib/navigation';
 
 import Clock from './Clock';
 
 export default class Header extends React.Component {
     constructor() {
+        super();
         this.state = ( { now: new Date() } );
 
         this.updateClock = this.updateClock.bind( this );
@@ -18,8 +20,11 @@ export default class Header extends React.Component {
     render() {
         return (
             <AppBar
-                title="Poker Simulator"
-                iconElementRight={<Clock/>} />
+                title="Poker Simulator">
+                <Navigation>
+                    <Clock/>
+                </Navigation>
+            </AppBar>
         );
     }
 };

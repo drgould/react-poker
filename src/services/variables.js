@@ -14,3 +14,14 @@ export const defaultRoom = {
         password : ''
     }
 };
+
+export const defaultGame = {
+    buyIn,
+    secondsPerLevel : startingSeconds,
+    blinds : smallBlinds,
+    payoutLevels : payoutLevels,
+    inProgress : true,
+    blindLevel : 0,
+    secondsRemaining : 0,
+    players : []
+};

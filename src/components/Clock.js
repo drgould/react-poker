@@ -1,8 +1,9 @@
 import React from 'react';
-import Chip from 'material-ui/Chip';
+import Chip from 'react-toolbox/lib/chip';
 
 export default class Clock extends React.Component {
     constructor() {
+        super();
         this.state = ( { now: new Date() } );
 
         this.updateClock = this.updateClock.bind( this );

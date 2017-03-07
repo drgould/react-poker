@@ -7,6 +7,8 @@ let debts = [];
 
 class Debt extends React.Component {
     constructor( props ) {
+        super();
+
         this.state = { paid: false };
 
         this.togglePaid = this.togglePaid.bind( this );
@@ -27,6 +29,7 @@ class Debt extends React.Component {
 
 class Debts extends React.Component {
     constructor( props ) {
+        super();
         this.state = { debts: debts };
         this.handleSubmit = this.handleSubmit.bind( this );
     }

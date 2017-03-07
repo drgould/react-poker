@@ -14,6 +14,7 @@ class Blind extends React.Component {
 
 class Blinds extends React.Component {
     constructor( props ) {
+        super();
         this.state = { activeIndex: 0 };
         this.raiseBlinds = this.raiseBlinds.bind( this );
         this.lowerBlinds = this.lowerBlinds.bind( this );

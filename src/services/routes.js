@@ -10,7 +10,6 @@ const ROUTES = {
     ROOM : {
         path : 'r/(:roomName)',
         getUrl( { roomName='' }={} ) {
-            console.log( this.path, roomName );
             return this.path.replace( '(:roomName)', roomName );
         }
     },

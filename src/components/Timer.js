@@ -6,6 +6,7 @@ import timer from '../services/timer';
 
 class Timer extends React.Component {
     constructor(props) {
+        super();
         this.state = { secondsLeft: props.startingTime };
         this.tickInterval = undefined;
 

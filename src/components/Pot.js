@@ -17,6 +17,7 @@ let ordinalAbbrev = ( ordinal ) => {
 
 class Pot extends React.Component {
     constructor() {
+        super();
         this.state = { pot: 0 };
     }
 

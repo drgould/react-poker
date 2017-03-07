@@ -1,8 +1,7 @@
 import React from 'react';
 import { browserHistory } from 'react-router';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
-import CircularProgress from 'material-ui/CircularProgress';
+import Button from 'react-toolbox/lib/button';
+import ProgressBar from 'react-toolbox/lib/progress_bar';
 import _clone from 'lodash/clone';
 
 import db from '../services/db';
@@ -12,6 +11,7 @@ import Room from '../components/Room';
 
 class Home extends React.Component {
     constructor() {
+        super();
         this.state = {
             rooms : [],
             loading : true
@@ -37,7 +37,11 @@ class Home extends React.Component {
 
     getRooms() {
         if( this.state.loading ) {
-            return <CircularProgress/>
+            return (
+                <ProgressBar
+                    type="circular"
+                    mode="indeterminate"/>
+            );
         }
         if( !this.state.rooms.length ) {
             return <h3>No Rooms!</h3>;
@@ -50,10 +54,9 @@ class Home extends React.Component {
             <div>
                 <h1>Rooms</h1>
                 <div>{ this.getRooms() }</div>
-                <FloatingActionButton
-                    onClick={() => browserHistory.push( ROUTES.ROOM.getUrl() )}>
-                    <ContentAdd/>
-                </FloatingActionButton>
+                <Button
+                    onClick={() => browserHistory.push( ROUTES.ROOM.getUrl() )}
+                    icon='add'/>
             </div>
         );
     }
