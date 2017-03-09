@@ -2,7 +2,7 @@
 'use strict';
 
 import React from 'react';
-import timer from '../services/timer';
+import timer from '../../services/timer';
 
 class Timer extends React.Component {
     constructor(props) {

@@ -51,7 +51,7 @@ const settings = {
                             localIdentName: "[name]--[local]--[hash:base64:8]"
                         }
                     },
-                    "postcss-loader" // has separate config, see postcss.config.js nearby
+                    "postcss-loader"
                 ]
             },
         ]

@@ -1,3 +1,31 @@
+@import "../node_modules/react-toolbox/lib/colors.css";
+@import "../node_modules/react-toolbox/lib/variables.css";
+
+:root {
+    --color-primary: var(--palette-orange-800);
+    --color-primary-dark: var(--palette-orange-900);
+    --color-accent: var(--palette-blue-600);
+    --color-accent-dark: var(--palette-blue-900);
+}
+
 body {
+    font-size: 16px;
     margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+html {
+    font-size: 10px;
+}
+
+button[class*="floating"] {
+    position: absolute;
+    right: 2rem;
+    bottom: 2rem;
+}
+
+hr {
+    width: 50%;
+    border: 1px solid ;
 }

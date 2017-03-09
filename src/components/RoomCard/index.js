@@ -5,7 +5,8 @@ import {
     CardTitle
 } from 'react-toolbox/lib/card';
 
-import ROUTES from '../services/routes';
+import ROUTES from '../../services/routes';
+import styles from "./styles.css";
 
 export default class Room extends React.Component {
     openRoom() {
@@ -14,7 +15,7 @@ export default class Room extends React.Component {
 
     render() {
         return (
-            <Card onClick={this.openRoom.bind(this)}>
+            <Card onClick={this.openRoom.bind(this)} className={styles.card}>
                 <CardTitle
                     avatar='http://lorempixel.com/50/50/business'
                     title={this.props.room.name}

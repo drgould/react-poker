@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { defaultGame } from '../services/variables';
-import Timer from '../components/Timer.js';
-import Blinds from '../components/Blinds.js';
-import Pot from '../components/Pot.js';
-import Debts from '../components/Debts.js';
-import db from '../services/db';
+import { defaultGame } from '../../services/variables';
+import Timer from '../../components/Timer';
+import Blinds from '../../components/Blinds';
+import Pot from '../../components/Pot';
+import Debts from '../../components/Debts';
+import db from '../../services/db';
 
-import { startingSeconds, payouts, buyIn, smallBlinds } from '../services/variables.js';
+import { startingSeconds, payouts, buyIn, smallBlinds } from '../../services/variables.js';
 
 function transformGameInputValue( input ) {
     switch( input.name ) {

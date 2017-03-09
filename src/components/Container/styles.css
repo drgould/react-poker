@@ -1,0 +1,15 @@
+@media ( max-width: 62rem ) {
+    .container {
+        width: 100%;
+    }
+}
+@media ( min-width: 62.1rem ) {
+    .container {
+        width: 62rem;
+    }
+}
+.container {
+    margin: auto;
+    padding: 1rem;
+    text-align: center;
+}

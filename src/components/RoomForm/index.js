@@ -3,7 +3,7 @@ import Input from 'react-toolbox/lib/input';
 import Button from 'react-toolbox/lib/button';
 import _cloneDeep from 'lodash/cloneDeep';
 
-import db from '../services/db';
+import db from '../../services/db';
 
 export default class RoomForm extends React.Component {
     constructor( props ) {

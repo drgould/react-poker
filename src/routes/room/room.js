@@ -7,11 +7,12 @@ import _pull from 'lodash/pull';
 import _last from 'lodash/last';
 import Button from 'react-toolbox/lib/button';
 
-import Game from '../components/Game';
-import RoomForm from '../components/RoomForm';
-import db from '../services/db';
-import ROUTES from '../services/routes';
-import { smallBlinds, defaultGame, defaultRoom } from '../services/variables';
+import Container from '../../components/Container';
+import Game from '../../components/GameCard';
+import RoomForm from '../../components/RoomForm';
+import db from '../../services/db';
+import ROUTES from '../../services/routes';
+import { smallBlinds, defaultRoom } from '../../services/variables';
 
 class Room extends React.Component {
     constructor() {
@@ -119,10 +120,11 @@ class Room extends React.Component {
     }
 
     render() {
-        if( this.state.roomId ) {
-            return this.showRoom();
-        }
-        return this.editRoom();
+        return  (
+            <Container>
+                { this.state.roomId ? this.showRoom() : this.editRoom() }
+            </Container>
+        );
     }
 }
 

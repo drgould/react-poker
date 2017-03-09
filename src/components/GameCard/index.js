@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
-import timer from '../services/timer';
+import timer from '../../services/timer';
 import _filter from 'lodash/filter';
 
 class Game extends React.Component {
