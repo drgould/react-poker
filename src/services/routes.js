@@ -9,8 +9,8 @@ const ROUTES = {
     },
     ROOM : {
         path : 'r/(:roomName)',
-        getUrl( { key = '' } = {} ) {
-            return `/${this.path.replace( '(:roomName)', key )}`;
+        getUrl( { url = '' } = {} ) {
+            return `/${this.path.replace( '(:roomName)', url )}`;
         },
     },
     GAME : {

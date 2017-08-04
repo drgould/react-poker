@@ -9,11 +9,12 @@ import { defaultGame } from '../../services/variables';
 import Timer from '../../components/Timer';
 import Blinds from '../../components/Blinds';
 import Container from '../../components/Container';
-import Pot from '../../components/Pot';
-import Debts from '../../components/Debts';
+import Players from '../../components/Players';
 import db from '../../services/db';
 
-import { secondsPerBlind, payouts, buyIn, smallBlinds } from '../../services/variables.js';
+import styles from './styles.css';
+
+import { minutesPerLevel, payouts, buyIn, smallBlinds } from '../../services/variables.js';
 
 function transformGameInputValue( input ) {
     switch( input.name ) {
@@ -40,7 +41,7 @@ class Game extends React.Component {
                 state : 'game',
             },
         );
-        window.addEventListener( 'blinds-up', this.handleBlindsUp, false );
+        window.addEventListener( 'raise-blinds', this.handleBlindsUp, false );
     }
 
     componentWillUnmount() {
@@ -133,12 +134,9 @@ class Game extends React.Component {
     render() {
         return (
             <Container>
-                <Blinds smallBlinds={ smallBlinds } />
-                <Timer startingTime={ secondsPerBlind } />
-                <div className="col3">
-                    <Pot payouts={ payouts } buyIn={ buyIn } />
-                    <Debts />
-                </div>
+                <Blinds game={this.state.game} className={styles.card} />
+                <Timer game={this.state.game} className={styles.card} />
+                <Players game={this.state.game} className={styles.card} />
             </Container>
         );
     }

@@ -4,12 +4,15 @@ import Button from 'react-toolbox/lib/button';
 import _cloneDeep from 'lodash/cloneDeep';
 
 import db from '../../services/db';
+import { defaultRoom } from '../../services/variables';
+
+import styles from './styles.css';
 
 export default class RoomForm extends React.Component {
     constructor( props ) {
         super();
         this.state = {
-            room : _cloneDeep( props.room ),
+            room : _cloneDeep( props.room || defaultRoom ),
         };
     }
 
@@ -41,7 +44,7 @@ export default class RoomForm extends React.Component {
 
     render() {
         return (
-            <form onSubmit={this.saveRoom.bind(this)}>
+            <form onSubmit={this.saveRoom.bind(this)} className={ styles.form }>
                 <Input
                     name="name"
                     label="Room Name"

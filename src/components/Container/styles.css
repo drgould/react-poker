@@ -1,11 +1,16 @@
-@media ( max-width: 62rem ) {
+@media ( min-width: 62.1rem ) {
+    [data-react-toolbox="card"] {
+        width: 33%;
+    }
+}
+@media ( max-width: 104rem ) {
     .container {
         width: 100%;
     }
 }
-@media ( min-width: 62.1rem ) {
+@media ( min-width: 104rem ) {
     .container {
-        width: 62rem;
+        width: 100rem;
     }
 }
 .container {

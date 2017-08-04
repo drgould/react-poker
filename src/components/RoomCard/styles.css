@@ -1,4 +1,6 @@
 .card {
-    width: 30rem;
+    width: calc( 33% - 2rem );
     margin: 1rem;
+    display: inline-flex;
+    cursor: pointer;
 }

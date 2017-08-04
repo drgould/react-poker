@@ -16,7 +16,7 @@ class Home extends React.Component {
         };
     }
     componentDidMount() {
-        this.roomsRef = db.bindToState( `rooms`, {
+        db.bindToState( `rooms`, {
             context : this,
             state : 'rooms',
             asArray : true,
@@ -24,9 +24,6 @@ class Home extends React.Component {
                 this.setState( { loading : false } );
             }
         } );
-    }
-    componentWillUnmount() {
-        db.removeBinding( this.roomsRef );
     }
 
     getRooms() {

@@ -29,3 +29,9 @@ hr {
     width: 50%;
     border: 1px solid ;
 }
+
+[data-react-toolbox="card"] {
+    width: calc( 33% - 2rem );
+    margin: 1rem;
+    display: inline-flex;
+}

@@ -1,23 +1,31 @@
 export default {
-    timeRemainingForBlinds,
     blindLevel,
+    secondsToTime,
+    timeRemaining,
+    timeRemainingForBlind,
     totalSecondsPlayed,
-    startTimer,
 };
 
-export function totalSecondsPlayed( game ) {
+export function totalSecondsPlayed( startTime, elapsedTime ) {
     const currentTime = Date.now() / 1000;
-    return ( currentTime - game.startTime + game.elapsedTime );
+    return ( currentTime - startTime + elapsedTime );
 }
 
-export function timeRemainingForBlinds( game ) {
-    return game.interval - ( game.interval % totalSecondsPlayed( game ) );
+export function timeRemainingForBlind( interval, startTime, elapsedTime ) {
+    if( !startTime ) {
+        return interval;
+    }
+    return interval - ( interval % totalSecondsPlayed( startTime, elapsedTime ) );
 }
 
-export function blindLevel( game ) {
-    return Math.floor( game.interval / totalSecondsPlayed( game ) );
+export function secondsToTime( seconds ) {
+    return new Date( 1000 * seconds ).toISOString().substr(14, 5);
 }
 
-export function startTimer() {
+export function blindLevel( interval, startTime, elapsedTime ) {
+    return Math.floor( interval / totalSecondsPlayed( startTime, elapsedTime ) );
+}
 
+export function timeRemaining( game ) {
+    return secondsToTime( timeRemainingForBlind( game.interval, game.startTime, game.elapsedTime ) );
 }
