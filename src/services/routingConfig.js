@@ -5,22 +5,26 @@ import Game from '../routes/game/game';
 import AppFrame from '../components/AppFrame/index';
 
 export default {
-    ...ROUTES.HOME,
+    path : ROUTES.HOME.path,
     component : AppFrame,
     indexRoute : { component : Home },
     onEnter() {
         //appState.pageTitle = 'Poker Simulator';
     },
+    onLeave() {
+        console.log( 'wtf' );
+    },
     childRoutes : [
         {
-            ...ROUTES.ROOM,
+            path : ROUTES.ROOM.path,
             component : Room,
             onEnter( { params } ) {
+                console.log( params );
                 //appState.pageTitle = `${params.roomName} - Poker Simulator`;
             },
         },
         {
-            ...ROUTES.GAME,
+            path : ROUTES.GAME.path,
             component : Game,
             onEnter( { params } ) {
                 //appState.pageTitle = `Game - Poker Simulator`;

@@ -1,13 +1,13 @@
-
-'use strict';
-
 import React from 'react';
+import { Card, CardTitle, CardText, CardActions } from 'react-toolbox/lib/card';
+
 import timer from '../../services/timer';
 
 class Timer extends React.Component {
-    constructor(props) {
+    constructor() {
         super();
-        this.state = { secondsLeft: props.startingTime };
+        const { startTime, elapsedTime, active } = this.props;
+        this.state = { startTime, elapsedTime, active };
         this.tickInterval = undefined;
 
         this.resetTimer = this.resetTimer.bind( this );
@@ -17,17 +17,19 @@ class Timer extends React.Component {
     }
 
     resetTimer() {
-        this.setState( { secondsLeft: this.props.startingTime } );
-        this.play();
+        this.props.onReset();
     }
 
     tick() {
-        let nextSecondsLeft = this.state.secondsLeft - 1;
-        if ( nextSecondsLeft === 0 ) {
-            this.resetTimer();
-            window.dispatchEvent( new Event( 'blinds-up' ) );
+        if( this.state.active ) {
+            const interval = this.props.interval;
+            const currentTime = Date.now() / 1000;
+            const nextSecondsLeft = interval - ( interval % ( currentTime - this.state.startTime + this.state.elapsedTime ) );
+            if( nextSecondsLeft <= 0 ) {
+                window.dispatchEvent( new Event( 'blinds-up' ) );
+            }
+            this.setState( { secondsLeft : this.state.secondsLeft - 1 } );
         }
-        this.setState( { secondsLeft: this.state.secondsLeft - 1 } );
     }
 
     play() {
@@ -41,15 +43,17 @@ class Timer extends React.Component {
 
     render() {
         return (
-            <div className="timer">
-                <h2>Blinds raise in:</h2>
-                <div className="current-time">{ timer.secondsToTime( this.state.secondsLeft ) }</div>
-                <div className="buttons">
-                    <button onClick={ this.play }>Play</button>
-                    <button onClick={ this.pause }>Pause</button>
-                    <button onClick={ this.resetTimer }>Reset</button>
-                </div>
-            </div>
+            <Card>
+                <CardTitle title="Blinds raise in:" />
+                <CardText>
+                    <h2>{ timer.timeRemainingForBlinds( this.state.secondsLeft ) }</h2>
+                </CardText>
+                <CardActions>
+                    <Button onClick={ this.play } label="Play" />
+                    <Button onClick={ this.pause } label="Pause" />
+                    <Button onClick={ this.resetTimer } label="Reset" />
+                </CardActions>
+            </Card>
         );
     }
 }

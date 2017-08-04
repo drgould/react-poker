@@ -1,13 +1,19 @@
 import React from 'react';
+import _cloneDeep from 'lodash/cloneDeep';
+
+import { Button } from 'react-toolbox/lib/button';
+import { Card, CardTitle, CardText, CardActions } from 'react-toolbox/lib/card';
+import { Input } from 'react-toolbox/lib/input';
 
 import { defaultGame } from '../../services/variables';
 import Timer from '../../components/Timer';
 import Blinds from '../../components/Blinds';
+import Container from '../../components/Container';
 import Pot from '../../components/Pot';
 import Debts from '../../components/Debts';
 import db from '../../services/db';
 
-import { startingSeconds, payouts, buyIn, smallBlinds } from '../../services/variables.js';
+import { secondsPerBlind, payouts, buyIn, smallBlinds } from '../../services/variables.js';
 
 function transformGameInputValue( input ) {
     switch( input.name ) {
@@ -27,7 +33,13 @@ class Game extends React.Component {
     }
 
     componentWillMount() {
-        this.gameRef = db.bindState( `/game/${this.props.params.gameId}` );
+        this.gameRef = db.bindToState(
+            `/game/${this.props.params.gameId}`,
+            {
+                context : this,
+                state : 'game',
+            },
+        );
         window.addEventListener( 'blinds-up', this.handleBlindsUp, false );
     }
 
@@ -120,19 +132,14 @@ class Game extends React.Component {
 
     render() {
         return (
-            <div className="container">
-                <div className="col1">
-                    <Blinds smallBlinds={ smallBlinds } />
-                </div>
-                <div className="col2">
-                    <Timer startingTime={ startingSeconds } />
-                </div>
+            <Container>
+                <Blinds smallBlinds={ smallBlinds } />
+                <Timer startingTime={ secondsPerBlind } />
                 <div className="col3">
                     <Pot payouts={ payouts } buyIn={ buyIn } />
                     <Debts />
                 </div>
-                <div className="clear-both"></div>
-            </div>
+            </Container>
         );
     }
 }

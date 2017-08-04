@@ -1,23 +1,17 @@
-
-
 import React from 'react';
 
-class Blind extends React.Component {
-    render() {
-        let classString = '';
-        if ( this.props.active ) {
-            classString += 'active';
-        }
-        return <li key={ this.props.key } className={ classString }>{ this.props.blind } / { this.props.blind * 2 }</li>
-    }
-}
+import styles from './styles.css';
+
+import { Card, CardTitle, CardActions } from 'react-toolbox/lib/card';
+import List from 'react-toolbox/lib/list/List';
+import ListItem from 'react-toolbox/lib/list/ListItem';
+
+import { blindLevel } from '../../services/timer';
 
 class Blinds extends React.Component {
-    constructor( props ) {
+    constructor() {
         super();
         this.state = { activeIndex: 0 };
-        this.raiseBlinds = this.raiseBlinds.bind( this );
-        this.lowerBlinds = this.lowerBlinds.bind( this );
     }
 
     componentWillMount() {
@@ -40,20 +34,22 @@ class Blinds extends React.Component {
 
     render() {
         return (
-            <div className="blinds">
-                <h2>Blinds:</h2>
-                <ul className="current-blinds">
-                    <li>Current Blind:</li>
-                    <Blind blind={ this.props.smallBlinds[ this.state.activeIndex ] } key={ this.state.activeIndex + '-large' } />
-                </ul>
-                <ul className="blinds-list">
+            <Card>
+                <CardTitle title="Blinds"/>
+                <List>
                     { this.props.smallBlinds.map( ( blind, index ) => {
-                        return <Blind blind={ blind } key={ index } active={ index === this.state.activeIndex } />
+                        return (
+                            <ListItem
+                                caption={ `${ blind } / ${ blind * 2 }` }
+                                className={ blindLevel( this.props.game ) === index ? styles.active : '' }/>
+                        );
                     } ) }
-                </ul>
-                <button onClick={ this.raiseBlinds }>Raise</button>
-                <button onClick={ this.lowerBlinds }>Lower</button>
-            </div>
+                </List>
+                <CardActions>
+                    <Button onClick={ this.raiseBlinds.bind( this ) } label="Raise" />
+                    <Button onClick={ this.lowerBlinds.bind( this ) } label="Lower"/>
+                </CardActions>
+            </Card>
         );
     }
 }

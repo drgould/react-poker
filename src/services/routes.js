@@ -5,19 +5,19 @@ const ROUTES = {
         path : '/',
         getUrl() {
             return this.path;
-        }
+        },
     },
     ROOM : {
         path : 'r/(:roomName)',
-        getUrl( { roomName='' }={} ) {
-            return `/${this.path.replace( '(:roomName)', roomName )}`;
-        }
+        getUrl( { key = '' } = {} ) {
+            return `/${this.path.replace( '(:roomName)', key )}`;
+        },
     },
     GAME : {
         path : 'g/(:gameId)',
-        getUrl( { gameId='' }={} ) {
-            return `/${this.path.replace( '(:gameId)', gameId )}`;
-        }
+        getUrl( { key = '' } = {} ) {
+            return `/${this.path.replace( '(:gameId)', key )}`;
+        },
     },
 };
 

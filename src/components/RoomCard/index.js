@@ -10,7 +10,7 @@ import styles from "./styles.css";
 
 export default class Room extends React.Component {
     openRoom() {
-        browserHistory.push( ROUTES.ROOM.getUrl( { roomName : this.props.room.name } ) );
+        browserHistory.push( ROUTES.ROOM.getUrl( this.props.room ) );
     }
 
     render() {

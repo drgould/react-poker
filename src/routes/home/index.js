@@ -1,10 +1,9 @@
 import React from 'react';
-import { browserHistory } from 'react-router';
+import { Link } from 'react-router';
 import Button from 'react-toolbox/lib/button';
 import ProgressBar from 'react-toolbox/lib/progress_bar';
 
 import db from '../../services/db';
-import ROUTES from '../../services/routes';
 import Container from '../../components/Container';
 import RoomCard from '../../components/RoomCard';
 
@@ -50,10 +49,9 @@ class Home extends React.Component {
                 <h1>Rooms</h1>
                 <hr/>
                 <div>{ this.getRooms() }</div>
-                <Button
-                    floating accent
-                    onClick={() => browserHistory.push( ROUTES.ROOM.getUrl() )}
-                    icon='add'/>
+                <Link to="/r/">
+                    <Button floating accent icon='add'/>
+                </Link>
             </Container>
         );
     }
