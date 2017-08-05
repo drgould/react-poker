@@ -1,7 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router';
-import Button from 'react-toolbox/lib/button';
-import ProgressBar from 'react-toolbox/lib/progress_bar';
 
 import db from '../../services/db';
 import Container from '../../components/Container';

@@ -3,15 +3,16 @@ const webpack = require('webpack');
 
 const settings = {
     entry: {
-        bundle: [
+        'bundle.js': [
             "react-hot-loader/patch",
             "./src/app.js"
-        ]
+        ],
+        'style.css': "./src/app.css",
     },
     output: {
-        filename: "bundle.js",
+        filename: "[name]",
         publicPath: "/",
-        path: path.resolve("public")
+        path: path.resolve("public"),
     },
     resolve: {
         extensions: [".js", ".json", ".css"]
@@ -40,17 +41,7 @@ const settings = {
             {
                 test: /\.css$/,
                 use: [
-                    "style-loader",
-                    {
-                        loader: "css-loader",
-                        options: {
-                            modules: true,
-                            sourceMap: true,
-                            importLoaders: 1,
-                            localIdentName: "[name]--[local]--[hash:base64:8]"
-                        }
-                    },
-                    "postcss-loader"
+                    "css-loader",
                 ]
             },
         ]

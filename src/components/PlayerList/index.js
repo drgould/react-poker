@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { CardText } from 'react-toolbox/lib/card';
-
 import Player from '../Player';
 
 export default ( props ) => {

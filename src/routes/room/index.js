@@ -1,7 +1,6 @@
 import React from 'react';
 import browserHistory from 'react-router/lib/browserHistory';
 import _cloneDeep from 'lodash/cloneDeep';
-import Button from 'react-toolbox/lib/button';
 
 import Container from '../../components/Container';
 import GameList from '../../components/GameList';

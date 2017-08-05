@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { ListItem } from 'react-toolbox/lib/list';
-
 function buyInString( player, buyIn ) {
     const totalBuyIn = player.buyIns.length * buyIn;
     const cashBuyIn = player.buyIns.filter( buy => buy.cash ).length * buyIn;

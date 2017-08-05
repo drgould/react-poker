@@ -1,5 +1,5 @@
 export const buyIn = 20;
-export const minutesPerLevel = 15;
+export const secondsPerLevel = 15 * 60;
 export const smallBlinds = [ 100, 200, 300, 400, 500, 800, 1000, 1500, 2000, 3000, 5000 ];
 export const payoutLevels = [
     {
@@ -17,13 +17,13 @@ export const defaultRoom = {
     url : '',
     defaultBlinds : smallBlinds,
     defaultBuyIn : buyIn,
-    defaultInterval : minutesPerLevel,
+    defaultInterval : secondsPerLevel,
     defaultPayout : payoutLevels,
 };
 
 export const defaultGame = {
     buyIn,
-    interval : minutesPerLevel,
+    interval : secondsPerLevel,
     blinds : smallBlinds,
     payouts : payoutLevels,
     active : false,

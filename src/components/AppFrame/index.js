@@ -1,5 +1,4 @@
 import React from 'react';
-import { Layout, Panel } from 'react-toolbox/lib/layout';
 
 import Header from '../PageHeader';
 import styles from './styles.css';

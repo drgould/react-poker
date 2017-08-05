@@ -1,13 +1,11 @@
 import React from 'react';
-import Chip from 'react-toolbox/lib/chip';
 
 export default class Clock extends React.Component {
     constructor() {
         super();
         this.state = ( { now: new Date() } );
 
-        this.updateClock = this.updateClock.bind( this );
-        setInterval( this.updateClock, 1000 );
+        setInterval( this.updateClock.bind( this ), 1000 );
     }
 
     updateClock() {

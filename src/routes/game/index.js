@@ -1,10 +1,6 @@
 import React from 'react';
 import _cloneDeep from 'lodash/cloneDeep';
 
-import { Button } from 'react-toolbox/lib/button';
-import { Card, CardTitle, CardText, CardActions } from 'react-toolbox/lib/card';
-import { Input } from 'react-toolbox/lib/input';
-
 import { defaultGame } from '../../services/variables';
 import Timer from '../../components/Timer';
 import Blinds from '../../components/Blinds';
@@ -14,7 +10,7 @@ import db from '../../services/db';
 
 import styles from './styles.css';
 
-import { minutesPerLevel, payouts, buyIn, smallBlinds } from '../../services/variables.js';
+import { secondsPerLevel, payouts, buyIn, smallBlinds } from '../../services/variables.js';
 
 function transformGameInputValue( input ) {
     switch( input.name ) {
