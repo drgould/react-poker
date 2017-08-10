@@ -1,0 +1,24 @@
+.card-image--cover {
+    overflow: hidden;
+
+    img {
+        position: relative;
+        top: 50%;
+        transform: translateY( -50% );
+    }
+}
+
+.btn {
+    .icon + span,
+    span + .icon {
+        margin-left: 0.7rem;
+    }
+}
+
+.empty + .divider {
+    margin-top: 0;
+}
+
+:not( .btn-group ) > .btn + .btn {
+    margin-left: 0.5rem;
+}

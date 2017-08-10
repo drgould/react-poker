@@ -30,5 +30,14 @@ export const defaultGame = {
     finished : false,
     startTime : 0,
     elapsedTime : 0,
-    players : []
+    name : '',
+    roomId : '',
+};
+
+export const defaultPlayer = {
+    buyIns : {
+        cash : 0,
+        venmo : 0,
+    },
+    active : true,
 };

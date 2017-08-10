@@ -1,17 +1,28 @@
 import React from 'react';
 
-import timer from '../../services/timer';
+import { timeRemaining } from '../../services/timer';
 
 export default ( props ) => (
-    <Card>
-        <CardTitle title="Blinds raise in:" />
-        <CardText>
-            <h1>{ timer.timeRemaining( props.game ) }</h1>
-        </CardText>
-        <CardActions>
-            <Button onClick={ () => window.dispatchEvent( new Event( 'start-clock' ) ) } label="Play" />
-            <Button onClick={ () => window.dispatchEvent( new Event( 'pause-clock' ) ) } label="Pause" />
-            <Button onClick={ () => window.dispatchEvent( new Event( 'reset-clock' ) ) } label="Reset" />
-        </CardActions>
-    </Card>
+    <div className="panel">
+        <div className="panel-header">
+            <h4 className="panel-title">Time Remaining:</h4>
+        </div>
+        <div className="panel-body">
+            <h1>{ timeRemaining( props.game ) }</h1>
+        </div>
+        <div className="panel-footer text-center">
+            <div className="btn-group">
+                <button
+                    className="btn btn-primary"
+                    onClick={ () => window.dispatchEvent( new Event( props.game.active ? 'pause-clock' : 'start-clock' ) ) }>
+                    { props.game.active ? 'Pause' : 'Play' }
+                </button>
+                <button
+                    className="btn"
+                    onClick={ () => window.dispatchEvent( new Event( 'reset-clock' ) ) }>
+                    Reset
+                </button>
+            </div>
+        </div>
+    </div>
 );

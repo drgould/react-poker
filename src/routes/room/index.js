@@ -2,7 +2,6 @@ import React from 'react';
 import browserHistory from 'react-router/lib/browserHistory';
 import _cloneDeep from 'lodash/cloneDeep';
 
-import Container from '../../components/Container';
 import GameList from '../../components/GameList';
 import RoomForm from '../../components/RoomForm';
 import db from '../../services/db';
@@ -13,7 +12,9 @@ class Room extends React.Component {
     constructor() {
         super();
         this.state = {
-            rooms : [],
+            room : undefined,
+            games : [],
+            editing : false,
         };
     }
     componentDidMount() {
@@ -22,22 +23,28 @@ class Room extends React.Component {
 
     initRoom( roomId ) {
         if( roomId ) {
-            db.bindToState( `rooms`, {
+            db.bindToState( `/rooms/${ roomId }`, {
                 context : this,
-                state : 'rooms',
+                state : 'room'
+            } );
+            db.bindToState( `/games/${ roomId }`, {
+                context : this,
+                state : 'games',
                 asArray : true,
-                queries : {
-                    orderByChild : 'url',
-                    equalTo : roomId,
-                },
             } );
         }
     }
 
-    createGame( room ) {
-        const newGame = _cloneDeep( defaultGame );
-        newGame.roomId = room.key;
-        db.push( 'games', { data : newGame } )
+    createGame() {
+        const room = this.state.rooms[ 0 ];
+        const newGame = Object.assign( _cloneDeep( defaultGame ), {
+            roomId : room.key,
+            roomUrl : room.url,
+            roomName : room.name,
+            name : `${ room.name } Game`,
+            createdTime : Date.now(),
+        } );
+        db.push( `/games/${ room.url }`, { data : newGame } )
             .then( ( { key } ) => { browserHistory.push( ROUTES.GAME.getUrl( { key } ) ); } );
     }
 
@@ -46,33 +53,36 @@ class Room extends React.Component {
         this.initRoom( room.url );
     }
 
-    editRoom( room ) {
-        return (
-            <div>
-                <h1>Create Room</h1>
-                <RoomForm
-                    room={ room }
-                    onSave={ this.onSave.bind( this ) }/>
-            </div>
-        );
-    }
-
-    showRoom( room ) {
-        return (
-            <div>
-                <h1>{ room.name }</h1>
-                <GameList room={ room } />
-                <Button floating accent icon='add' onClick={ () => this.createGame( room ) }/>
-            </div>
-        );
-    }
-
     render() {
         const room = this.state.rooms[ 0 ];
-        return  (
-            <Container>
-                { room ? this.showRoom( room ) : this.editRoom( room ) }
-            </Container>
+        let roomName = <div className="loading centered"></div>;
+        let gamesList = <div className="loading centered"></div>
+        if( room && !this.state.editing ) {
+            roomName = room.name;
+            gamesList = <GameList games={ this.state.games } />;
+        } else if( ( room && this.state.editing ) || !this.props.params.roomName ) {
+            roomName = room ? 'Edit Room' : 'Create a Room';
+            gamesList = <RoomForm room={ room } onSave={ this.onSave.bind( this ) }/>;
+        }
+        return(
+            <div className="column">
+                <div className="navbar">
+                    <section className="navbar-section"></section>
+                    <section className="navbar-center">
+                        <h2>{ roomName }</h2>
+                    </section>
+                    <section className="navbar-section">{
+                        !room || this.state.editing ?
+                            '' :
+                            <button className="btn btn-primary" onClick={this.createGame.bind( this )}>
+                                <span>Create Game</span>
+                                <i className="icon icon-plus"></i>
+                            </button>
+                    }</section>
+                </div>
+                <div className="divider"></div>
+                { gamesList }
+            </div>
         );
     }
 }

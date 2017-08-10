@@ -1,28 +1,45 @@
 import React from 'react';
 
-import styles from './styles.css';
+import  './styles.less';
 
 import { getCurrentBlind } from '../../services/timer';
 
 export default ( props ) => {
-    const blinds = props.game.blinds;
+    console.log( 'game', props.game );
     const currentBlind = getCurrentBlind( props.game );
-    console.log( currentBlind );
     return (
-        <Card>
-            <CardTitle title="Blinds"/>
-            <List>{
-                blinds.map( blind => (
-                    <ListItem
-                        key={ blind }
-                        caption={ `${ blind } / ${ blind * 2 }` }
-                        { ...( blind === currentBlind ? { className : styles.active } : {} ) } />
-                ) )
-            }</List>
-            <CardActions>
-                <Button onClick={ () => window.dispatchEvent( new Event( 'raise-blinds' ) ) } label="Raise" />
-                <Button onClick={ () => window.dispatchEvent( new Event( 'lower-blinds' ) ) } label="Lower"/>
-            </CardActions>
-        </Card>
+        <div className="panel">
+            <div className="panel-header">
+                <h4 className="panel-title">Blinds</h4>
+            </div>
+            <div className="panel-body">{
+                props.game.blinds.map( blind => {
+                    const BlindTag = blind === currentBlind ? 'h1' : 'p';
+                    return (
+                        <div className="tile" key={ blind }>
+                            <div className="tile-content">
+                                <div className="tile-title">
+                                    <BlindTag>
+                                        { `${ blind } / ${ blind * 2 }` }
+                                    </BlindTag>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                } )
+            }</div>
+            <footer className="panel-footer">
+                <div className="btn-group btn-group-block">
+                    <button className="btn" onClick={ () => window.dispatchEvent( new Event( 'raise-blinds' ) ) }>
+                        <i className="icon icon-plus"></i>
+                        <span>Raise Blinds</span>
+                    </button>
+                    <button className="btn" onClick={ () => window.dispatchEvent( new Event( 'lower-blinds' ) ) }>
+                        <i className="icon icon-minus"></i>
+                        <span>Lower Blinds</span>
+                    </button>
+                </div>
+            </footer>
+        </div>
     );
 }

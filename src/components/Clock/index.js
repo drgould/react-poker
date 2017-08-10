@@ -17,6 +17,6 @@ export default class Clock extends React.Component {
     }
 
     render() {
-        return <Chip>{this.getTime()}</Chip>;
+        return <label className="chip">{this.getTime()}</label>;
     }
 };

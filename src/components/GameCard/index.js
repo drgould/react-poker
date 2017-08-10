@@ -1,17 +1,36 @@
 import React from 'react';
-import { Link } from 'react-router';
-import timer from '../../services/timer';
+import browserHistory from 'react-router/lib/browserHistory';
 
+import { totalPot } from '../../services/payouts';
+import { getCurrentBlind } from '../../services/timer';
 import ROUTES from '../../services/routes';
 
-export default ( props ) => (
-    <Link to={ ROUTES.GAME.getUrl( props.game ) }>
-        <Card>
-            <CardText>
-                <p>{ props.game.players.filter( player => player.active ).length } players remaining</p>
-                <p>Current blinds: { props.game.blinds[ props.game.blindLevel ] }</p>
-                <p>Time remaining: { timer.timeRemainingForBlind( props.game.secondsRemaining ) }</p>
-            </CardText>
-        </Card>
-    </Link>
-);
+export default ( props ) => {
+    const players = props.game.players || [];
+    const activePlayers = players.filter( player => player.active ).length;
+    console.log( 'here?' );
+    const pot = totalPot( players, props.game.buyIn );
+    console.log( 'nah' );
+    const blind = getCurrentBlind( props.game );
+    const created = new Date( props.game.createdTime ).toLocaleDateString();
+    return (
+        <div className="tile" onClick={ () => browserHistory.push( ROUTES.GAME.getUrl( props.game ) ) }>
+            <div className="tile-content">
+                <p className="tile-title">{ created }</p>
+                <div className="container">
+                    <div className="columns text-center">
+                        <p className="tile-subtitle column col-4">
+                            Players: { activePlayers }
+                        </p>
+                        <p className="tile-subtitle column col-4">
+                            Pot: ${ pot }
+                        </p>
+                        <p className="tile-subtitle column col-4">
+                            Blinds: { blind }/{ blind * 2 }
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}

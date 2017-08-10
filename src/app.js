@@ -1,11 +1,13 @@
 import React from 'react';
 import { render } from 'react-dom';
-import Router from 'react-router/lib/Router';
-import browserHistory from 'react-router/lib/browserHistory';
+import { Router, browserHistory } from 'react-router';
 import WebFont from 'webfontloader';
+import routingConfig from "./services/routingConfig";
 
-import routingConfig from './services/routingConfig';
-import './app.css';
+import '../node_modules/spectre.css/spectre.less';
+import '../node_modules/spectre.css/spectre-icons.less';
+import './variables.less';
+import './app.less';
 
 WebFont.load({
     google: {
@@ -13,4 +15,4 @@ WebFont.load({
     },
 });
 
-render( <Router routes={routingConfig} history={browserHistory}/>, document.getElementById( 'app' ) );
+render( <Router routes={ routingConfig } history={ browserHistory } />, document.getElementById( 'app' ) );

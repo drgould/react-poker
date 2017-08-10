@@ -2,22 +2,19 @@ import React from 'react';
 
 import Player from '../Player';
 
-export default ( props ) => {
-    let list;
-    if( props.game.players.length ) {
-        list = (
-            <List>{
-                props.game.players.map( player => <Player key={ player.uid } player={ player } />)
-            }</List>
-        )
-    } else {
-        list = <h2>No Players</h2>;
+export default ( { players = {} } ) => {
+    console.log( players );
+    if( Object.keys( players ).length ) {
+        return (
+            <div className="panel-body">{
+                players.map( player => <Player key={ player.key } player={ player } /> )
+            }</div>
+        );
     }
-
     return (
-        <CardText>
-            <h1>Players</h1>
-            { list }
-        </CardText>
+        <div className="empty">
+            <h4 className="empty-title">No Players</h4>
+            <p className="empty-subtitle">Click the button above to join.</p>
+        </div>
     );
 }

@@ -1,16 +1,15 @@
 import React from 'react';
-import _cloneDeep from 'lodash/cloneDeep';
+import { Link } from 'react-router';
 
-import { defaultGame } from '../../services/variables';
 import Timer from '../../components/Timer';
 import Blinds from '../../components/Blinds';
-import Container from '../../components/Container';
 import Players from '../../components/Players';
 import db from '../../services/db';
+import { authState } from '../../services/auth';
+import ROUTES from '../../services/routes';
 
-import styles from './styles.css';
-
-import { secondsPerLevel, payouts, buyIn, smallBlinds } from '../../services/variables.js';
+import './styles.less';
+import { defaultGame } from "../../services/variables";
 
 function transformGameInputValue( input ) {
     switch( input.name ) {
@@ -25,23 +24,31 @@ class Game extends React.Component {
     constructor() {
         super();
         this.state = {
-            game : _cloneDeep( defaultGame ),
-        }
+            game : undefined,
+        };
+        window.addEventListener( 'auth-change', () => this.setState( this.state ) );
     }
 
     componentWillMount() {
-        this.gameRef = db.bindToState(
-            `/game/${this.props.params.gameId}`,
+        const gameId = this.props.params.gameId;
+        db.bindToState(
+            `/games/${ gameId }`,
             {
                 context : this,
                 state : 'game',
             },
         );
+        db.bindToState(
+            `/players/${ gameId }`,
+            {
+                context : this,
+                state : 'players',
+            }
+        );
         window.addEventListener( 'raise-blinds', this.handleBlindsUp, false );
     }
 
     componentWillUnmount() {
-        db.removeBinding( this.gameRef );
         window.removeEventListener( 'blinds-up', this.handleBlindsUp, false );
     }
 
@@ -71,12 +78,14 @@ class Game extends React.Component {
         this.setState( { newGame : this.state.newGame } );
     }
 
-    createGame( ev ) {
-        ev.preventDefault();
-        this.setState( {
-            games : this.state.games.concat( _clone( this.state.newGame ) ),
-            newGame : _clone( defaultGame )
-        } );
+    joinGame() {
+        db.post( `/players/${ this.state.game.key }/${ authState.user.uid }`, defaultGame )
+            .then();
+    }
+
+    buyIn( cash ) {
+        const buyIns = this.state.players[ authState.user.uid ].buyIns || { cash : 0, venmo : 0 };
+        db.update( `/players/${ this.props.game.key }/${ authState.user.uid }`, { buyIns } );
     }
 
     gameEditor() {
@@ -128,12 +137,72 @@ class Game extends React.Component {
     }
 
     render() {
+        const game = this.state.game;
+        if( !game ) {
+            return (
+                <div className="container">
+                    <div className="columns">
+                        <div className="column">
+                            <div className="loading"></div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        const startDt = new Date( parseInt( game.createdTime, 10 ) ).toLocaleString();
+
+        let buttons = '';
+        if( authState.user && this.state.players ) {
+            if( this.state.players[ authState.user.uid ] ) {
+                buttons = (
+                    <button className="btn btn-primary" onClick={ () => this.buyIn( true ) }>
+                        Buy In (Cash)
+                    </button>
+                ) + (
+                    <button className="btn btn-primary" onClick={ () => this.buyIn( false ) }>
+                        Buy In (Venmo)
+                    </button>
+                );
+            } else {
+                buttons = (
+                    <button className="btn btn-primary" onClick={ () => this.joinGame() }>
+                        Join Game
+                    </button>
+                );
+            }
+        }
+
         return (
-            <Container>
-                <Blinds game={this.state.game} className={styles.card} />
-                <Timer game={this.state.game} className={styles.card} />
-                <Players game={this.state.game} className={styles.card} />
-            </Container>
+            <div className="container">
+                <div className="columns">
+                    <div className="column col-12">
+                        <div className="navbar">
+                            <section className="navbar-section">
+                                <Link to={ ROUTES.ROOM.getUrl( game.roomUrl ) } className="btn btn-link">
+                                    <i className="icon icon-arrow-left"></i>
+                                    <span>Back to { game.roomName }</span>
+                                </Link>
+                            </section>
+                            <section className="navbar-center">
+                                <h1>{ game.name }</h1>
+                                <small>Started: { startDt }</small>
+                            </section>
+                            <section className="navbar-section">{
+                                buttons
+                            }</section>
+                        </div>
+                    </div>
+                    <div className="column col-4">
+                        <Blinds game={this.state.game} />
+                    </div>
+                    <div className="column col-4">
+                        <Timer game={this.state.game} />
+                    </div>
+                    <div className="column col-4">
+                        <Players game={this.state.game} />
+                    </div>
+                </div>
+            </div>
         );
     }
 }

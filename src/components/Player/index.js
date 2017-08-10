@@ -8,8 +8,15 @@ function buyInString( player, buyIn ) {
 }
 
 export default ( props ) => (
-    <ListItem
-        avatar="http://lorempixel.com/50/50/business"
-        caption={ props.player.displayName }
-        legend={ buyInString( props.player, props.buyIn ) } />
+    <div className="tile">
+        <div className="tile-icon">
+            <figure className="avatar avatar-lg">
+
+            </figure>
+        </div>
+    </div>
+    // <ListItem
+    //     avatar="http://lorempixel.com/50/50/business"
+    //     caption={ props.player.displayName }
+    //     legend={ buyInString( props.player, props.buyIn ) } />
 );

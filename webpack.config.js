@@ -1,21 +1,31 @@
 const path = require('path');
 const webpack = require('webpack');
+const ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
+
+const extractLess = new ExtractTextPlugin( {
+    filename : '[name].[contenthash].css',
+    disable : process.env.NODE_ENV !== 'production',
+} );
 
 const settings = {
     entry: {
-        'bundle.js': [
+        bundle : [
             "react-hot-loader/patch",
             "./src/app.js"
         ],
-        'style.css': "./src/app.css",
     },
     output: {
-        filename: "[name]",
+        filename: "[name].js",
         publicPath: "/",
         path: path.resolve("public"),
     },
     resolve: {
-        extensions: [".js", ".json", ".css"]
+        extensions: [
+            ".js",
+            ".json",
+            ".css",
+            ".less",
+        ],
     },
     devtool: "eval-source-map",
     module: {
@@ -35,16 +45,30 @@ const settings = {
                         development: {
                             plugins: ["react-hot-loader/babel"]
                         }
-                    }
-                }
+                    },
+                },
             },
             {
-                test: /\.css$/,
-                use: [
-                    "css-loader",
-                ]
+                test: /\.(css|less)$/,
+                use: extractLess.extract( {
+                    use : [
+                        {
+                            loader : 'css-loader',
+                            options : {
+                                sourceMap : true,
+                            },
+                        },
+                        {
+                            loader : 'less-loader',
+                            options : {
+                                sourceMap : true,
+                            },
+                        },
+                    ],
+                    fallback : 'style-loader',
+                } ),
             },
-        ]
+        ],
     },
     devServer: {
         contentBase: path.resolve("public"),
@@ -57,9 +81,8 @@ const settings = {
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NamedModulesPlugin(),
-        new webpack.LoaderOptionsPlugin({
-            debug: true
-        }),
+        new webpack.LoaderOptionsPlugin( { debug: true } ),
+        extractLess,
     ],
 };
 

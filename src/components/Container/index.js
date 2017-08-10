@@ -1,5 +1,11 @@
 import React from 'react';
 
-import styles from './styles.css';
+import './styles.less';
 
-export default ( props ) => <div className={styles.container}>{ props.children }</div>;
+export default ( props ) => (
+    <div className="container grid-1280">
+        <div className="columns">
+            { props.children }
+        </div>
+    </div>
+);

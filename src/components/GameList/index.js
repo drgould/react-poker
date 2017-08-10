@@ -10,37 +10,56 @@ export default class Games extends React.Component {
     }
 
     componentDidMount() {
-        db.syncState( 'games', {
-            context : this,
-            state : 'games',
-            asArray : true,
-            queries : {
-                orderByChild : 'roomId',
-                equalTo : this.props.room.key
-            },
-        } );
     }
 
     getGames( inProgress ) {
         if( this.state.games.length ) {
             const games = this.state.games.filter( game => game.finished !== inProgress );
             if ( games.length ) {
-                return <div>{
-                    games.map( game => <GameCard game={ game } key={ game.key }/> )
-                }</div>;
+                return (
+                    <div className="panel-body">{
+                        games.map( game => <GameCard game={ game } key={ game.key }/> )
+                    }</div>
+                );
             }
         }
-        return <h4>No Games</h4>;
+        return (
+            <div className="empty">
+                <h4 className="empty-title">
+                    No Games
+                </h4>
+                <p className="empty-subtitle">
+                    { inProgress ? 'You know you want to start one!' : 'Hurry up and play already!' }
+                </p>
+            </div>
+        );
     }
 
     render() {
         return (
-            <div>
-                <h2>Games</h2>
-                <h3>In Progress</h3>
-                { this.getGames( true ) }
-                <h3>Finished</h3>
-                { this.getGames( false ) }
+            <div className="container">
+                <div className="columns">
+                    <div className="column col-6">
+                        <div className="panel">
+                            <div className="panel-header">
+                                <div className="panel-title text-center">
+                                    Active Games
+                                </div>
+                            </div>
+                            { this.getGames( true ) }
+                        </div>
+                    </div>
+                    <div className="column col-6">
+                        <div className="panel">
+                            <div className="panel-header">
+                                <div className="panel-title text-center">
+                                    Completed Games
+                                </div>
+                            </div>
+                            { this.getGames( false ) }
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
