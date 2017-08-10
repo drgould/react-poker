@@ -3,22 +3,15 @@ import React from 'react';
 import GameCard from '../GameCard';
 import db from '../../services/db';
 
-export default class Games extends React.Component {
-    constructor() {
-        super();
-        this.state = { games : [] };
-    }
-
-    componentDidMount() {
-    }
-
-    getGames( inProgress ) {
-        if( this.state.games.length ) {
-            const games = this.state.games.filter( game => game.finished !== inProgress );
-            if ( games.length ) {
+export default ( props ) => {
+    const games = Object.values( props.games );
+    const getGames = ( inProgress ) => {
+        if( games.length ) {
+            const gamesToShow = games.filter( game => game.finished !== inProgress );
+            if ( gamesToShow.length ) {
                 return (
                     <div className="panel-body">{
-                        games.map( game => <GameCard game={ game } key={ game.key }/> )
+                        gamesToShow.map( game => <GameCard game={ game } key={ game.key }/> )
                     }</div>
                 );
             }
@@ -33,34 +26,32 @@ export default class Games extends React.Component {
                 </p>
             </div>
         );
-    }
+    };
 
-    render() {
-        return (
-            <div className="container">
-                <div className="columns">
-                    <div className="column col-6">
-                        <div className="panel">
-                            <div className="panel-header">
-                                <div className="panel-title text-center">
-                                    Active Games
-                                </div>
+    return (
+        <div className="container">
+            <div className="columns">
+                <div className="column col-6">
+                    <div className="panel">
+                        <div className="panel-header">
+                            <div className="panel-title text-center">
+                                Active Games
                             </div>
-                            { this.getGames( true ) }
                         </div>
+                        { getGames( true ) }
                     </div>
-                    <div className="column col-6">
-                        <div className="panel">
-                            <div className="panel-header">
-                                <div className="panel-title text-center">
-                                    Completed Games
-                                </div>
+                </div>
+                <div className="column col-6">
+                    <div className="panel">
+                        <div className="panel-header">
+                            <div className="panel-title text-center">
+                                Completed Games
                             </div>
-                            { this.getGames( false ) }
                         </div>
+                        { getGames( false ) }
                     </div>
                 </div>
             </div>
-        );
-    }
+        </div>
+    );
 }

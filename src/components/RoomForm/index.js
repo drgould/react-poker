@@ -32,7 +32,7 @@ export default class RoomForm extends React.Component {
         switch( name ) {
             case 'name' : {
                 this.state.room.name = value;
-                this.state.room.key = value.replace( / /ig, '_' );
+                this.state.room.key = value.trim().toLowerCase().replace( / /ig, '_' );
                 break;
             }
         }
@@ -43,41 +43,49 @@ export default class RoomForm extends React.Component {
     validateForm( pristine ) {
         const room = this.state.room;
 
-        function validate( resolve, reject ) {
+        const validate = ( resolve, reject ) => {
             const isFieldValid = {
                 name : {
                     valid : false,
                     message : '',
                 },
             };
-            if( room.name && room.name.length >= 3 ) {
+            const name = room.name.trim();
+            if( name && name.length >= 3 ) {
                     isFieldValid.name.valid = true;
-            } else if( room.name ) {
+            } else if( name ) {
                 isFieldValid.name.message = 'Name must be 3 or more letters';
             } else if( !pristine ) {
                 isFieldValid.name.message = 'Please enter a name';
             }
-            const isFormValid = isFieldValid.reduce( ( valid, field ) => ( valid && field.valid ), true );
+            const isFormValid = Object.values( isFieldValid ).reduce( ( valid, field ) => ( valid && field.valid ), true );
             this.setState( { isFormValid, isFieldValid } );
             if( isFormValid ) {
                 resolve();
             } else {
                 reject();
             }
-        }
+        };
 
         return new Promise( ( resolve, reject ) => {
             if( room.key !== this.oldKey ) {
-                db.fetch( `/rooms/${ room.key }` )
-                    .then( () => {
+                db.fetch( `/rooms/${ room.key }`, {} )
+                    .then( ( { key } ) => {
+                        if( !key ) {
+                            validate( resolve, reject );
+                        } else {
+                            return Promise.reject( 'found duplicate key' );
+                        }
+                    } )
+                    .catch( () => {
                         this.setState( { isFormValid : false } );
                         reject();
-                    } )
-                    .catch( () => validate( resolve, reject ) );
+                    } );
             } else {
                 validate( resolve, reject );
             }
-        } );
+        } )
+            .catch( reason => reason );
     }
 
     saveRoom( ev ) {

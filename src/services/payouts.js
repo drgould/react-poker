@@ -1,5 +1,5 @@
 export default function payouts( game ) {
-    return amounts( totalPot( game.players, game.buyIn ), game.payouts );
+    return amounts( totalPot( game ), game.options.payouts );
 }
 
 export function amounts( pot=0, structure ) {
@@ -13,10 +13,6 @@ export function amounts( pot=0, structure ) {
     }
 }
 
-export function totalBuyIns( players=[] ) {
-    return players.reduce( ( buyIns, player ) => player.buyIns.length, 0 );
-}
-
-export function totalPot( players=[], buyIn=0 ) {
-    return totalBuyIns( players ) * buyIn;
+export function totalPot( { options : { buyIn }, state : { cashBuyIns, venmoBuyIns }} ) {
+    return ( cashBuyIns + venmoBuyIns ) * buyIn;
 }

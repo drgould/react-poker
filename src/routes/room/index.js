@@ -30,31 +30,30 @@ class Room extends React.Component {
             db.bindToState( `/games/${ roomId }`, {
                 context : this,
                 state : 'games',
-                asArray : true,
             } );
         }
     }
 
     createGame() {
-        const room = this.state.rooms[ 0 ];
+        const room = this.state.room;
+        const createdTime = Date.now();
         const newGame = Object.assign( _cloneDeep( defaultGame ), {
             roomId : room.key,
-            roomUrl : room.url,
             roomName : room.name,
             name : `${ room.name } Game`,
-            createdTime : Date.now(),
+            createdTime,
         } );
-        db.push( `/games/${ room.url }`, { data : newGame } )
-            .then( ( { key } ) => { browserHistory.push( ROUTES.GAME.getUrl( { key } ) ); } );
+        db.post( `/games/${ room.key }/${ createdTime }`, { data : newGame } )
+            .then( () => { browserHistory.push( ROUTES.GAME.getUrl( newGame ) ); } );
     }
 
     onSave( room ) {
         browserHistory.push( ROUTES.ROOM.getUrl( room ) );
-        this.initRoom( room.url );
+        this.initRoom( room.key );
     }
 
     render() {
-        const room = this.state.rooms[ 0 ];
+        const room = this.state.room;
         let roomName = <div className="loading centered"></div>;
         let gamesList = <div className="loading centered"></div>
         if( room && !this.state.editing ) {

@@ -23,9 +23,9 @@ export function blindLevel( interval, startTime, elapsedTime ) {
 }
 
 export function getCurrentBlind( game ) {
-    return game.blinds[ blindLevel( game.interval, game.startTime, game.elapsedTime ) ];
+    return game.blinds[ blindLevel( game.options.interval, game.state.startTime, game.state.elapsedTime ) ];
 }
 
 export function timeRemaining( game ) {
-    return secondsToTime( timeRemainingForBlind( game.interval, game.startTime, game.elapsedTime ) );
+    return secondsToTime( timeRemainingForBlind( game.options.interval, game.state.startTime, game.state.elapsedTime ) );
 }

@@ -22,16 +22,25 @@ export const defaultRoom = {
 };
 
 export const defaultGame = {
-    buyIn,
-    interval : secondsPerLevel,
-    blinds : smallBlinds,
-    payouts : payoutLevels,
-    active : false,
-    finished : false,
-    startTime : 0,
-    elapsedTime : 0,
     name : '',
     roomId : '',
+    createdTime : 0,
+    options : {
+        buyIn,
+        interval : secondsPerLevel,
+        blinds : smallBlinds,
+        payouts : payoutLevels,
+    },
+    state : {
+        active : false,
+        finished : false,
+        startTime : 0,
+        elapsedTime : 0,
+        activePlayers : 0,
+        inactivePlayers : 0,
+        cashBuyIns : 0,
+        venmoBuyIns : 0,
+    }
 };
 
 export const defaultPlayer = {

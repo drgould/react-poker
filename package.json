@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server",
     "build": "webpack",
-    "setup": "npm install -g webpack && npm install",
+    "setup": "yarn global add webpack && yarn",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "license": "MIT",

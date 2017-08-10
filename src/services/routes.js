@@ -9,14 +9,14 @@ const ROUTES = {
     },
     ROOM : {
         path : 'r/(:roomName)',
-        getUrl( { url = '' } = {} ) {
-            return `/${this.path.replace( '(:roomName)', url )}`;
+        getUrl( { key = '' } = {} ) {
+            return `/${this.path.replace( '(:roomName)', key )}`;
         },
     },
     GAME : {
         path : 'g/(:gameId)',
-        getUrl( { key = '' } = {} ) {
-            return `/${this.path.replace( '(:gameId)', key )}`;
+        getUrl( { roomId = '', createdTime = '' } = {} ) {
+            return `/${this.path.replace( '(:gameId)',  `${ roomId }_${ createdTime }` )}`;
         },
     },
 };
