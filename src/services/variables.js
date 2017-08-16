@@ -45,8 +45,8 @@ export const defaultGame = {
 
 export const defaultPlayer = {
     buyIns : {
-        cash : 0,
-        venmo : 0,
+        cash : [],
+        venmo : [],
     },
     active : true,
 };

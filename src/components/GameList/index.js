@@ -7,11 +7,11 @@ export default ( props ) => {
     const games = Object.values( props.games );
     const getGames = ( inProgress ) => {
         if( games.length ) {
-            const gamesToShow = games.filter( game => game.finished !== inProgress );
+            const gamesToShow = games.filter( game => game.state.finished !== inProgress );
             if ( gamesToShow.length ) {
                 return (
                     <div className="panel-body">{
-                        gamesToShow.map( game => <GameCard game={ game } key={ game.key }/> )
+                        gamesToShow.map( game => <GameCard game={ game } key={ game.createdTime }/>)
                     }</div>
                 );
             }

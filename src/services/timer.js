@@ -1,31 +1,44 @@
-export function totalSecondsPlayed( startTime, elapsedTime ) {
+export function totalSecondsPlayed( startTime, elapsedTime, active ) {
+    if( !active ) {
+        return elapsedTime;
+    }
     if( startTime ) {
-        const currentTime = Math.round( Date.now() / 1000 );
-        return ( currentTime - startTime + elapsedTime );
+        return ( getCurrentTime() - startTime + elapsedTime );
     }
     return 0;
 }
 
-export function timeRemainingForBlind( interval, startTime, elapsedTime ) {
+export function timeRemainingForBlind( interval, startTime, elapsedTime, active ) {
     if( !startTime ) {
         return interval;
     }
-    return interval - ( interval % totalSecondsPlayed( startTime, elapsedTime ) );
+    return interval - ( totalSecondsPlayed( startTime, elapsedTime, active ) % interval );
 }
 
 export function secondsToTime( seconds ) {
     return new Date( 1000 * seconds ).toISOString().substr(14, 5);
 }
 
-export function blindLevel( interval, startTime, elapsedTime ) {
-    const secondsPlayed = totalSecondsPlayed( startTime, elapsedTime );
-    return secondsPlayed ? Math.floor( interval / secondsPlayed ) : 0;
+export function blindLevel( interval, startTime, elapsedTime, active ) {
+    const secondsPlayed = totalSecondsPlayed( startTime, elapsedTime, active );
+    return secondsPlayed ? Math.floor( secondsPlayed / interval ) : 0;
+}
+
+export function getBlindLevel( game ) {
+    return Math.min(
+        game.options.blinds.length - 1,
+        blindLevel( game.options.interval, game.state.startTime, game.state.elapsedTime, game.state.active )
+    );
 }
 
 export function getCurrentBlind( game ) {
-    return game.blinds[ blindLevel( game.options.interval, game.state.startTime, game.state.elapsedTime ) ];
+    return game.options.blinds[ getBlindLevel( game ) ];
 }
 
 export function timeRemaining( game ) {
-    return secondsToTime( timeRemainingForBlind( game.options.interval, game.state.startTime, game.state.elapsedTime ) );
+    return secondsToTime( timeRemainingForBlind( game.options.interval, game.state.startTime, game.state.elapsedTime, game.state.active ) );
+}
+
+export function getCurrentTime() {
+    return Math.round( Date.now().valueOf() / 1000 );
 }

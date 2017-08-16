@@ -4,12 +4,15 @@ import { Link } from 'react-router';
 import Timer from '../../components/Timer';
 import Blinds from '../../components/Blinds';
 import Players from '../../components/Players';
+import Payouts from '../../components/Payouts';
+import Pot from '../../components/Pot';
 import db from '../../services/db';
 import { authState } from '../../services/auth';
 import ROUTES from '../../services/routes';
 
 import './styles.less';
-import { defaultGame } from "../../services/variables";
+import { defaultPlayer } from "../../services/variables";
+import { getCurrentTime, totalSecondsPlayed } from "../../services/timer";
 
 function transformGameInputValue( input ) {
     switch( input.name ) {
@@ -20,36 +23,57 @@ function transformGameInputValue( input ) {
     }
 }
 
-class Game extends React.Component {
+export default class Game extends React.Component {
     constructor() {
         super();
         this.state = {
             game : undefined,
         };
-        window.addEventListener( 'auth-change', () => this.setState( this.state ) );
+
+        this._forceUpdate = () => this.forceUpdate();
+
+        this.events = {
+            'raise-blinds' : () => this.changeBlinds( true ),
+            'lower-blinds' : () => this.changeBlinds( false ),
+            'start-clock' : () => this.toggleGameRunning(),
+            'pause-clock' : () => this.toggleGameRunning(),
+            'reset-clock' : () => this.resetClock(),
+            'auth-state-change' : this._forceUpdate,
+            'cash-buy-in' : () => this.buyIn( true ),
+            'venmo-buy-in' : () => this.buyIn( false ),
+        }
     }
 
     componentWillMount() {
-        const gameId = this.props.params.gameId;
+        const tokens = this.props.params.gameId.split( '_' );
+        const roomId = tokens.slice( 0, -1 );
+        const gameId = tokens.slice( -1 );
+        this.gamePath = `${ roomId }/${ gameId }`;
         db.bindToState(
-            `/games/${ gameId }`,
+            `/games/${ this.gamePath }`,
             {
                 context : this,
                 state : 'game',
             },
         );
         db.bindToState(
-            `/players/${ gameId }`,
+            `/players/${ this.gamePath }`,
             {
                 context : this,
                 state : 'players',
             }
         );
-        window.addEventListener( 'raise-blinds', this.handleBlindsUp, false );
+        this.interval = setInterval( this._forceUpdate, 1000 );
+        for( const event in this.events ) {
+            window.addEventListener( event, this.events[ event ], false );
+        }
     }
 
     componentWillUnmount() {
-        window.removeEventListener( 'blinds-up', this.handleBlindsUp, false );
+        clearInterval( this.interval );
+        for( const event in this.events ) {
+            window.removeEventListener( event, this.events[ event ], false );
+        }
     }
 
     handleBlindsUp() {
@@ -58,6 +82,17 @@ class Game extends React.Component {
         setTimeout( function() { body.classList.remove( 'flashing' ); }, 1700 );
         setTimeout( function() { body.classList.add( 'flashing' ); }, 1800 );
         setTimeout( function() { body.classList.remove( 'flashing' ); }, 3500 );
+    }
+
+    changeBlinds( up ) {
+        const { options : { interval } } = this.state.game;
+        let { startTime, elapsedTime, active } = this.state.game.state;
+
+        elapsedTime = totalSecondsPlayed( startTime, elapsedTime, active );
+        elapsedTime = Math.max( 0, elapsedTime + ( interval * ( up ? 1 : -1 ) ) );
+        startTime = getCurrentTime();
+
+        this._updateGameState( { elapsedTime, startTime } );
     }
 
     handleNewGameInputChange( ev ) {
@@ -79,65 +114,109 @@ class Game extends React.Component {
     }
 
     joinGame() {
-        db.post( `/players/${ this.state.game.key }/${ authState.user.uid }`, defaultGame )
-            .then();
+        db.post( `/players/${ this.gamePath }/${ authState.user.uid }`, { data : defaultPlayer } );
+        const activePlayers = this.state.game.state.activePlayers + 1;
+        this._updateGameState( { activePlayers } );
     }
 
     buyIn( cash ) {
-        const buyIns = this.state.players[ authState.user.uid ].buyIns || { cash : 0, venmo : 0 };
-        db.update( `/players/${ this.props.game.key }/${ authState.user.uid }`, { buyIns } );
+        const gameState = this.state.game.state;
+        const secondsPlayed = totalSecondsPlayed( gameState.startTime, gameState.elapsedTime, gameState.active );
+        const buyIns = this.state.players[ authState.user.uid ].buyIns || {};
+
+        buyIns.cash = buyIns.cash || [];
+        buyIns.venmo = buyIns.venmo || [];
+        buyIns[ cash ? 'cash' : 'venmo' ].push( secondsPlayed );
+        db.update( `/players/${ this.gamePath }/${ authState.user.uid }`, { data: { buyIns } } );
+
+        const prop = cash ? 'cashBuyIns' : 'venmoBuyIns';
+        const data = {};
+        data[ prop ] = gameState[ prop ] + 1;
+
+        this._updateGameState( data );
     }
 
-    gameEditor() {
-        return (
-            <Card>
-                <CardTitle title="Create a Game"/>
-                <CardText>
-                    <div>
-                        $<Input
-                        type="number"
-                        name="buyIn"
-                        value={this.state.newGame.buyIn}
-                        floatingLabelText="Buy In Amount"
-                        onChange={ this.handleNewGameInputChange.bind( this ) }/>
-                    </div>
-                    <div>
-                        <Input
-                            type="number"
-                            name="secondsPerLevel"
-                            value={this.state.newGame.secondsPerLevel / 60}
-                            floatingLabelText="Minutes per blind level"
-                            onChange={ this.handleNewGameInputChange.bind( this ) }/>
-                    </div>
-                    <div>
-                        <h4>Blinds</h4>
-                        <ul>
-                            { this.getBlinds() }
-                            <li>
-                                <Input
-                                    type="number"
-                                    value={this.state.newSmallBlind}
-                                    hintText="Small Blind"
-                                    onChange={ this.handleNewBlindChange.bind( this ) } />
-                                / { this.state.newSmallBlind * 2 }
-                                <Button
-                                    icon={<ContentAdd/>}
-                                    onClick={ this.addBlind.bind( this ) }/>
-                            </li>
-                        </ul>
-                    </div>
-                </CardText>
-                <CardActions>
-                    <Button
-                        label="Create"
-                        onClick={ this.createGame.bind( this ) }/>
-                </CardActions>
-            </Card>
-        );
+    toggleGameRunning() {
+        let { active, startTime, elapsedTime } = this.state.game.state;
+        const currentTime = getCurrentTime();
+        if( active ) {
+            if( startTime ) {
+                elapsedTime += currentTime - startTime;
+            }
+        } else {
+            startTime = currentTime;
+        }
+        active = !active;
+
+        this._updateGameState( { startTime, elapsedTime, active } );
     }
+
+    resetClock() {
+        const { options : { interval } } = this.state.game;
+        let { startTime, elapsedTime, active } = this.state.game.state;
+
+        elapsedTime = totalSecondsPlayed( startTime, elapsedTime, active );
+        elapsedTime = Math.floor( elapsedTime / interval ) * interval;
+        startTime = getCurrentTime();
+
+        this._updateGameState( { elapsedTime, startTime } );
+    }
+
+    _updateGameState( state ) {
+        db.update( `/games/${ this.gamePath }/state`, { data : state } );
+    }
+
+    // gameEditor() {
+    //     return (
+    //         <Card>
+    //             <CardTitle title="Create a Game"/>
+    //             <CardText>
+    //                 <div>
+    //                     $<Input
+    //                     type="number"
+    //                     name="buyIn"
+    //                     value={this.state.newGame.buyIn}
+    //                     floatingLabelText="Buy In Amount"
+    //                     onChange={ this.handleNewGameInputChange.bind( this ) }/>
+    //                 </div>
+    //                 <div>
+    //                     <Input
+    //                         type="number"
+    //                         name="secondsPerLevel"
+    //                         value={this.state.newGame.secondsPerLevel / 60}
+    //                         floatingLabelText="Minutes per blind level"
+    //                         onChange={ this.handleNewGameInputChange.bind( this ) }/>
+    //                 </div>
+    //                 <div>
+    //                     <h4>Blinds</h4>
+    //                     <ul>
+    //                         { this.getBlinds() }
+    //                         <li>
+    //                             <Input
+    //                                 type="number"
+    //                                 value={this.state.newSmallBlind}
+    //                                 hintText="Small Blind"
+    //                                 onChange={ this.handleNewBlindChange.bind( this ) } />
+    //                             / { this.state.newSmallBlind * 2 }
+    //                             <Button
+    //                                 icon={<ContentAdd/>}
+    //                                 onClick={ this.addBlind.bind( this ) }/>
+    //                         </li>
+    //                     </ul>
+    //                 </div>
+    //             </CardText>
+    //             <CardActions>
+    //                 <Button
+    //                     label="Create"
+    //                     onClick={ this.createGame.bind( this ) }/>
+    //             </CardActions>
+    //         </Card>
+    //     );
+    // }
 
     render() {
         const game = this.state.game;
+        const players = this.state.players;
         if( !game ) {
             return (
                 <div className="container">
@@ -152,18 +231,8 @@ class Game extends React.Component {
         const startDt = new Date( parseInt( game.createdTime, 10 ) ).toLocaleString();
 
         let buttons = '';
-        if( authState.user && this.state.players ) {
-            if( this.state.players[ authState.user.uid ] ) {
-                buttons = (
-                    <button className="btn btn-primary" onClick={ () => this.buyIn( true ) }>
-                        Buy In (Cash)
-                    </button>
-                ) + (
-                    <button className="btn btn-primary" onClick={ () => this.buyIn( false ) }>
-                        Buy In (Venmo)
-                    </button>
-                );
-            } else {
+        if( authState.user && players ) {
+            if( !players[ authState.user.uid ] ) {
                 buttons = (
                     <button className="btn btn-primary" onClick={ () => this.joinGame() }>
                         Join Game
@@ -176,9 +245,9 @@ class Game extends React.Component {
             <div className="container">
                 <div className="columns">
                     <div className="column col-12">
-                        <div className="navbar">
+                        <div className="navbar navbar--game">
                             <section className="navbar-section">
-                                <Link to={ ROUTES.ROOM.getUrl( game.roomUrl ) } className="btn btn-link">
+                                <Link to={ ROUTES.ROOM.getUrl( game.roomId ) } className="btn">
                                     <i className="icon icon-arrow-left"></i>
                                     <span>Back to { game.roomName }</span>
                                 </Link>
@@ -193,18 +262,18 @@ class Game extends React.Component {
                         </div>
                     </div>
                     <div className="column col-4">
-                        <Blinds game={this.state.game} />
+                        <Timer game={game} />
+                        <Blinds game={game} />
                     </div>
                     <div className="column col-4">
-                        <Timer game={this.state.game} />
+                        <Pot game={game} players={players}/>
+                        <Payouts game={game}/>
                     </div>
                     <div className="column col-4">
-                        <Players game={this.state.game} />
+                        <Players game={game} players={players} />
                     </div>
                 </div>
             </div>
         );
     }
-}
-
-export default Game;
+};

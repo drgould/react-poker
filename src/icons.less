@@ -1,0 +1,41 @@
+@import "~spectre.css/spectre-icons.less";
+
+.icon-play {
+  &::before {
+    &:extend( .icon-caret::before );
+
+    transform: translate( -45%, -50% ) rotate( -90deg ) scale( 1.8 );
+  }
+}
+
+.icon-pause {
+  &::before {
+    &:extend( .icon-plus::after );
+
+    left: 75%;
+  }
+
+  &::after {
+    &:extend( .icon-plus::after );
+
+    left: 25%;
+  }
+}
+
+.icon-home {
+  &::before {
+    &:extend( .icon-mail::before );
+
+    height: 0.7em;
+    border-top-color: transparent;
+    transform: translate( -50%, -40% );
+  }
+
+  &::after {
+    &:extend( .icon-mail::after );
+
+    height: 0.8em;
+    width: 0.8em;
+    transform: translate( -50%, -90% ) rotate( 135deg ) skew( 16deg, 16deg );
+  }
+}

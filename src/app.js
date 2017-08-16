@@ -5,9 +5,9 @@ import WebFont from 'webfontloader';
 import routingConfig from "./services/routingConfig";
 
 import '../node_modules/spectre.css/spectre.less';
-import '../node_modules/spectre.css/spectre-icons.less';
 import './variables.less';
 import './app.less';
+import './icons.less';
 
 WebFont.load({
     google: {

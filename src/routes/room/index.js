@@ -7,6 +7,8 @@ import RoomForm from '../../components/RoomForm';
 import db from '../../services/db';
 import ROUTES from '../../services/routes';
 import { defaultGame } from '../../services/variables';
+import { getCurrentTime } from "../../services/timer";
+import { authState } from "../../services/auth";
 
 class Room extends React.Component {
     constructor() {
@@ -16,9 +18,19 @@ class Room extends React.Component {
             games : [],
             editing : false,
         };
+
+        this._forceUpdate = () => this.forceUpdate();
     }
+    componentWillMount() {
+        window.addEventListener( 'auth-state-change', this._forceUpdate, false );
+    }
+
     componentDidMount() {
         this.initRoom( this.props.params.roomName );
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener( 'auth-state-change', this._forceUpdate, false );
     }
 
     initRoom( roomId ) {
@@ -36,14 +48,16 @@ class Room extends React.Component {
 
     createGame() {
         const room = this.state.room;
-        const createdTime = Date.now();
+        const createdTime = getCurrentTime();
         const newGame = Object.assign( _cloneDeep( defaultGame ), {
             roomId : room.key,
             roomName : room.name,
             name : `${ room.name } Game`,
             createdTime,
         } );
-        db.post( `/games/${ room.key }/${ createdTime }`, { data : newGame } )
+        const path = `${ room.key }/${ createdTime }`;
+        db.post( `/games/${ path }`, { data : newGame } )
+            .then( () => db.post( `/players/${ path }` ) )
             .then( () => { browserHistory.push( ROUTES.GAME.getUrl( newGame ) ); } );
     }
 
@@ -71,7 +85,7 @@ class Room extends React.Component {
                         <h2>{ roomName }</h2>
                     </section>
                     <section className="navbar-section">{
-                        !room || this.state.editing ?
+                        !room || this.state.editing || !authState.user ?
                             '' :
                             <button className="btn btn-primary" onClick={this.createGame.bind( this )}>
                                 <span>Create Game</span>

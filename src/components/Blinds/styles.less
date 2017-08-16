@@ -1,3 +1,24 @@
-.active {
-    color: red;
+.panel__blinds-panel {
+    .container {
+        padding: 0;
+    }
+
+    .columns {
+        align-items: center;
+    }
+
+    .panel__blinds-panel__blinds {
+        flex-grow: 99;
+
+        h1,
+        h4 {
+            &:not(:last-child) {
+                margin-bottom: 0;
+            }
+        }
+
+        h4 {
+            opacity: 0.5;
+        }
+    }
 }
